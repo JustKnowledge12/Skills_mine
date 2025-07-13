@@ -1,0 +1,39 @@
+USING SQLITE THER SERVERLESS ,CONFIGURELESS CONNECTION EASY TO SETUP LOCALLY TO WORK ON SALES DATA
+##CODE:
+import sqlite3
+##working with sales data
+#connect sqlite database
+
+connection=sqlite3.connect('sales.db')
+cursor=connection.cursor()
+
+##creating the table
+cursor.execute('''
+               Create Table If Not EXISTS sales(
+                   id INTEGER Primary Key,
+                   date Text NOT NULL,
+                   product TEXT NOT NULL,
+                   sales INTEGER,
+                   region TEXT
+               )''')
+##insert data
+sales_data=[
+    ('2023-01-01','product1',100,'North'),
+    ('2023-01-02','product2',200,'South'),
+    ('2023-01-03','product3',300,'East'),
+    ('2023-01-04','product4',400,'North'),
+    ('2023-01-05','product5',500,'West'),
+
+
+]
+cursor.executemany('''
+                   Insert into sales(date,product,sales,region)
+                   values(?,?,?,?)''',sales_data)
+connection.commit()
+
+#Quering the data
+cursor.execute('select* from sales')
+rows=cursor.fetchall()
+
+for row in rows:
+    print(row)
