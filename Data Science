@@ -1,0 +1,148 @@
+# %%
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+# %%
+df=pd.read_csv('height-weight.csv')
+df.head()##we can see first 5 data using head 
+
+# %%
+plt.scatter(df['Weight'],df['Height'])
+plt.xlabel('Weight')
+plt.ylabel('Height')
+
+# %%
+## correlation:how much height is related to the weight
+df.corr()
+
+
+# %%
+##Seaborn for visualizatiuon
+import seaborn as sns 
+sns.pairplot(df)
+
+
+# %%
+### here it is linearly corelation then we can use simple linear regression
+##X=df['Weight'] it is in series
+##type(X)
+
+# %%
+X=df[['Weight']]
+X
+np.array(X)
+X.head()
+y=df['Height']##we can make it as a series
+
+# %%
+X_series=df['Weight']
+np.array(X_series).shape
+
+
+# %%
+y
+
+# %%
+##Train test Split
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.25,random_state=42)
+
+
+# %%
+X_train.shape
+
+# %%
+##standardixation
+from sklearn.preprocessing import StandardScaler
+ 
+
+# %%
+scaler=StandardScaler()
+X_train=scaler.fit_transform(X_train)
+
+# %%
+X_test=scaler.transform(X_test)
+
+# %%
+X_test
+
+# %%
+##Apply simpke linear regreession
+from sklearn.linear_model import LinearRegression
+
+# %%
+regression=LinearRegression()
+
+# %%
+##regression.fit(X_series,y) thats why we have
+##to assign the independent variable as a dataframe not as series
+
+# %%
+regression.fit(X_train,y_train)
+
+# %%
+regression.coef_
+
+# %%
+print("Coefficient or slope",regression.coef_)
+print("Interceptis",regression.intercept_)
+
+# %%
+
+
+# %%
+##plot the best fit line 
+plt.scatter(X_train,y_train)
+plt.plot(X_train,regression.predict(X_train))
+
+# %%
+##prediction of text data
+y_pred=regression.predict(X_test)
+
+# %%
+##performanmce
+from sklearn.metrics import mean_squared_error,mean_absolute_error
+
+
+# %%
+mse=mean_squared_error(y_test,y_pred)
+mae=mean_absolute_error(y_test,y_pred)
+rmse=np.sqrt(mse)
+print(mse)
+print(mae)
+print(rmse)
+
+# %%
+from sklearn.metrics import r2_score
+
+
+# %%
+score1=r2_score(y_test,y_pred)
+print(score1)
+
+# %%
+##display adjusted R-squared
+1-(1-score1)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
+
+# %%
+##OLS TECHNIQUE
+import statsmodels.api as sm 
+
+
+# %%
+model=sm.OLS(y_train,X_train).fit()
+
+# %%
+prediction=model.predict(X_test)
+print(prediction)
+
+# %%
+print(model.summary())
+
+# %%
+##prediction for new data
+regression.predict(scaler.transform([[72]]))##if weight is 72
+
+
